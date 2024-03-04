@@ -1,0 +1,17 @@
+import { Injectable } from '@nestjs/common';
+import {JwtService} from "@nestjs/jwt";
+import * as process from "process";
+
+@Injectable()
+export class TokenService {
+    constructor(
+        private readonly jwtService: JwtService,
+    ) {}
+
+    async generateJwtToken(payload) {
+        return this.jwtService.sign(payload, {
+            secret: process.env.JWT_ACCESS_SECRET,
+            expiresIn: 60*60
+        })
+    }
+}
