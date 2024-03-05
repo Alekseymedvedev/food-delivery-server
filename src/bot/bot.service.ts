@@ -35,4 +35,15 @@ export class BotService {
             })
         }
     }
+    async updateUser(chatId:string){
+        for (let user of process.env.BOT_CHAT_ID_MESSAGE.split(",")) {
+            await bot.sendMessage(user, `Изменена роль пользователя ${chatId}`, {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{text: 'Посмотреть пользователя', web_app: {url: `${process.env.WEB_APP_URL}/update-user/${chatId}`}}]
+                    ]
+                }
+            })
+        }
+    }
 }

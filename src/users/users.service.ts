@@ -46,6 +46,7 @@ export class UsersService {
         try {
             const user = await this.usersRepository.findOne({where: {chatId}});
             await user.update({role: 'admin'});
+            await this.botService.updateUser(chatId)
             return user;
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при обновлении роли пользователя: ${e}`)
