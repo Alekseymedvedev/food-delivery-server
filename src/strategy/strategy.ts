@@ -14,8 +14,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        return payload?.role === 'admin'
+        try {
+            if (payload?.role === 'admin' || payload?.role === 'superAdmin') {
+                return true
+            } else {
+                await this.botService.errorMessage(`Произошла ошибка доступа, доступ разрешен только admin. Пользователь ${payload.chatId}: `)
+                throw new UnauthorizedException('Доступ разрешен только admin')
+            }
 
+        } catch (e) {
+            await this.botService.errorMessage(`Произошла ошибка доступа, доступ разрешен только admin: ${e}`)
+            throw new UnauthorizedException('Доступ разрешен только admin')
+        }
     }
 }
 

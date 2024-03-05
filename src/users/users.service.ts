@@ -41,9 +41,10 @@ export class UsersService {
         }
     }
 
-    async updateRoleUser(username: string) {
+    async updateRoleUser(chatId: string) {
+
         try {
-            const user = await this.usersRepository.findOne({where: {username}});
+            const user = await this.usersRepository.findOne({where: {chatId}});
             await user.update({role: 'admin'});
             return user;
         } catch (e) {

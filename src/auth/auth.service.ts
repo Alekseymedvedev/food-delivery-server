@@ -13,16 +13,14 @@ export class AuthService {
     async authentication(dto: UsersDto) {
         try {
             const existUser = await this.usersService.findOne(`${dto.chatId}`)
-            const payload = {chatId: dto.chatId, queryId: dto.queryId};
+            const payload = {chatId: dto.chatId};
 
             if (!existUser) {
                 const user = await this.usersService.createUser(dto)
                 const {id, chatId, username} = user
+                await this.botService.newAdmin(chatId)
                 return {id, chatId, username, access_token: await this.tokenService.generateJwtToken(payload)};
             } else {
-                if (existUser.role === 'superAdmin'){
-                    await this.botService.newAdmin(dto.chatId)
-                }
                 return {existUser, access_token: await this.tokenService.generateJwtToken({...payload,role:existUser.role})};
             }
         } catch (e) {

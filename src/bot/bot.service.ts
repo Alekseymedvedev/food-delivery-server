@@ -24,12 +24,12 @@ export class BotService {
             })
         }
     }
-    async newAdmin(idUser:string){
-        for (let chatId of process.env.BOT_CHAT_ID_MESSAGE.split(",")) {
-            await bot.sendMessage(chatId, 'Зарегестрирован новый пользователь', {
+    async newAdmin(chatId:string){
+        for (let user of process.env.BOT_CHAT_ID_MESSAGE.split(",")) {
+            await bot.sendMessage(user, `Зарегестрирован новый пользователь ${chatId}`, {
                 reply_markup: {
                     inline_keyboard: [
-                        [{text: 'Посмотреть пользователя', web_app: {url: `${process.env.WEB_APP_URL}/order/${idUser}`}}]
+                        [{text: 'Посмотреть пользователя', web_app: {url: `${process.env.WEB_APP_URL}/update-user/${chatId}`}}]
                     ]
                 }
             })
