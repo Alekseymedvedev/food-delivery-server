@@ -9,18 +9,17 @@ dotenv.config();
 const token = process.env.BOT_TOKEN;
 
 export const bot = new TelegramBot(token, { polling: true });
-bot.onText(/\/echo (.+)/, (msg, match) => {
-  const chatId = msg.chat.id;
-  const resp = match[1];
 
-  bot.sendMessage(chatId, resp);
-});
 
 
 async function bootstrap() {
   try {
     const PORT = process.env.PORT || 5000;
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, {
+      cors: {
+        origin: [process.env.WEB_APP_URL]
+      }
+    });
     app.enableCors();
     const config = new DocumentBuilder()
       .setTitle('Сервис доставки еды')

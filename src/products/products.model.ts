@@ -1,12 +1,4 @@
-import {
-    BelongsTo,
-    BelongsToMany,
-    Column,
-    DataType,
-    ForeignKey,
-    Model,
-    Table,
-} from 'sequelize-typescript';
+import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table,} from 'sequelize-typescript';
 import {ApiProperty} from '@nestjs/swagger';
 import {CategoriesModel} from '../categories/categories.model';
 import {OrdersModel} from 'src/orders/orders.model';

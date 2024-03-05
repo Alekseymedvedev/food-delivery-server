@@ -1,4 +1,3 @@
-// import { ProductsService } from './../products/products.service';
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {CreateOrderDto} from './dto/create-order.dto';
 import {UpdateOrderDto} from './dto/update-order.dto';
@@ -46,7 +45,12 @@ export class OrdersService {
 
     async findAllOrder() {
         try {
-            return this.ordersRepository.findAll({include: {all: true}});
+            return this.ordersRepository.findAll({
+                order:[
+                    ['id','DESC']
+                ],
+                include: {all: true}
+            });
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при получении заказов: ${e}`)
             throw new HttpException(
@@ -58,7 +62,13 @@ export class OrdersService {
 
     async findAllOrdersUser(userId: number) {
         try {
-            return this.ordersRepository.findAll({where: {userId}, include: {all: true}});
+            return this.ordersRepository.findAll({
+                where: {userId},
+                order:[
+                    ['id','DESC']
+                ],
+                include: {all: true}
+            });
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при получении заказов: ${e}`)
             throw new HttpException(
@@ -80,9 +90,7 @@ export class OrdersService {
                     attributes: ['count'],
                 }).then((op) => op?.count || product.count);
             }
-            const data = {
-                ...order.dataValues
-            }
+            const data = {...order.dataValues}
             return data;
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при получении заказа: ${e}`)
@@ -95,10 +103,7 @@ export class OrdersService {
 
     async updateOrder(id: number, dto: UpdateOrderDto) {
         try {
-            const order = await this.ordersRepository.findOne({
-                where: {id},
-            });
-
+            const order = await this.ordersRepository.findOne({ where: {id}});
             await order.update({...dto});
             return order;
         } catch (e) {

@@ -6,24 +6,25 @@ import {
     Param,
     Patch,
     Post,
-    Put,
     UploadedFile,
-    UseInterceptors,
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
 import {ProductsService} from './products.service';
 import {FileInterceptor} from '@nestjs/platform-express';
 import {ProductsDto} from './products.dto';
 import {ProductsModel} from './products.model';
 import {ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {JwtAuthGuard} from "../auth/auth.guard";
 
 @ApiTags('Продукты')
 @Controller('products')
 export class ProductsController {
-    constructor(private productsService: ProductsService) {
-    }
+    constructor(private productsService: ProductsService) {}
 
     @ApiOperation({summary: 'Создание продукта'})
     @ApiResponse({status: 200, type: ProductsModel})
+    @UseGuards(JwtAuthGuard)
     @Post()
     @UseInterceptors(FileInterceptor('image'))
     create(@Body() dto: ProductsDto, @UploadedFile() image) {
@@ -46,6 +47,7 @@ export class ProductsController {
 
     @ApiOperation({summary: 'Удаление продукта'})
     @ApiResponse({status: 200})
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     delete(@Param('id') id: number) {
         return this.productsService.deleteProduct(id);
@@ -53,6 +55,7 @@ export class ProductsController {
 
     @ApiOperation({summary: 'Обновление продукта'})
     @ApiResponse({status: 200, type: ProductsModel})
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     @UseInterceptors(FileInterceptor('image'))
     update(@Param('id') id: number, @Body() dto: ProductsDto, @UploadedFile() image,) {

@@ -33,8 +33,7 @@ export class ProductsService {
 
   async getAllProducts() {
     try {
-      const products = await this.ProductsRepository.findAll();
-      return products;
+      return await this.ProductsRepository.findAll();
     } catch (e) {
       await this.botService.errorMessage(`Произошла ошибка при получении продукта: ${e}`)
       throw new HttpException(
@@ -46,11 +45,7 @@ export class ProductsService {
 
   async getOneProduct(id: number) {
     try {
-      const product = await this.ProductsRepository.findByPk(id);
-      if (!product) {
-        throw new Error('Product not found');
-      }
-      return product;
+      return await this.ProductsRepository.findByPk(id);
     } catch (e) {
       await this.botService.errorMessage(`Произошла ошибка при получении продукта: ${e}`)
       throw new HttpException(
@@ -63,12 +58,8 @@ export class ProductsService {
   async updateProduct(id: number, dto: ProductsDto, image) {
     try {
       const product = await this.ProductsRepository.findOne({ where: { id } });
-      if (!product) {
-        throw new Error('Product not found');
-      }
-      const fileName = image
-        ? await this.fileService.createFile(image)
-        : product.dataValues.image;
+
+      const fileName = image ? await this.fileService.createFile(image) : product.dataValues.image;
       await product.update({ ...dto, image: fileName });
       return product;
     } catch (e) {
@@ -83,9 +74,6 @@ export class ProductsService {
   async deleteProduct(id: number): Promise<void> {
     try {
       const product = await this.ProductsRepository.findByPk(id);
-      if (!product) {
-        throw new Error('Product not found');
-      }
       await product.destroy();
     } catch (e) {
       await this.botService.errorMessage(`Произошла ошибка при удалении продукта: ${e}`)

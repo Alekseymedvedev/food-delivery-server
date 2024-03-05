@@ -1,10 +1,4 @@
-import {
-    Column,
-    DataType,
-    HasMany,
-    Model,
-    Table,
-} from 'sequelize-typescript';
+import {Column, DataType, HasMany, Model, Table,} from 'sequelize-typescript';
 import {ApiProperty} from '@nestjs/swagger';
 import {OrdersModel} from 'src/orders/orders.model';
 

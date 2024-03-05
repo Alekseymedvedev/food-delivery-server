@@ -1,14 +1,10 @@
-import {Controller, Get, Post, Body, Param, Delete, Patch, UseInterceptors, UploadedFile} from '@nestjs/common';
+import {Controller, Get, Post, Body, Param, Patch, UseGuards} from '@nestjs/common';
 import {OrdersService} from './orders.service';
 import {CreateOrderDto} from './dto/create-order.dto';
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {CategoriesModel} from "../categories/categories.model";
 import {OrdersModel} from "./orders.model";
-import {ProductsModel} from "../products/products.model";
-import {FileInterceptor} from "@nestjs/platform-express";
-import {ProductsDto} from "../products/products.dto";
 import {UpdateOrderDto} from "./dto/update-order.dto";
-import {BotService} from "../bot/bot.service";
+import {JwtAuthGuard} from "../auth/auth.guard";
 
 @ApiTags('Заказы')
 @Controller('orders')
@@ -44,10 +40,14 @@ export class OrdersController {
         return this.ordersService.findOneOrder(+id);
     }
 
-    @ApiOperation({summary: 'Изменение статуса заказа'})
-    @ApiResponse({status: 200, type: OrdersModel})
+    @Patch('user/:id')
+    updateNotification(@Param('id') id: number, @Body() dto: UpdateOrderDto,) {
+        return this.ordersService.updateOrder(+id, dto,);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    update(@Param('id') id: number, @Body() dto: UpdateOrderDto,) {
+    updateStatus(@Param('id') id: number, @Body() dto: UpdateOrderDto,) {
         return this.ordersService.updateOrder(+id, dto,);
     }
 }

@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  UploadedFile, UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseGuards, UseInterceptors,} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CategoriesService } from './categories.service';
@@ -43,6 +33,7 @@ export class CategoriesController {
 
   @ApiOperation({ summary: 'Частичное изменение категории' })
   @ApiResponse({ status: 200, type: CategoriesModel })
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image'))
   async update(
@@ -55,6 +46,7 @@ export class CategoriesController {
 
   @ApiOperation({ summary: 'Удаление категории' })
   @ApiResponse({ status: 200 })
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.categoriesService.deleteCategory(+id);

@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable, UnauthorizedException} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {UsersService} from "../users/users.service";
 import {TokenService} from "../token/token.service";
 import {UsersDto} from "../users/users.dto";
@@ -11,7 +11,6 @@ export class AuthService {
                 private readonly botService: BotService) {
     }
     async authentication(dto: UsersDto) {
-
         try {
             const existUser = await this.usersService.findOne(`${dto.chatId}`)
             const payload = {chatId: dto.chatId, queryId: dto.queryId};
