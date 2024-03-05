@@ -20,6 +20,9 @@ export class AuthService {
                 const {id, chatId, username} = user
                 return {id, chatId, username, access_token: await this.tokenService.generateJwtToken(payload)};
             } else {
+                if (existUser.role === 'superAdmin'){
+                    await this.botService.newAdmin(dto.chatId)
+                }
                 return {existUser, access_token: await this.tokenService.generateJwtToken({...payload,role:existUser.role})};
             }
         } catch (e) {
