@@ -14,7 +14,7 @@ export class BotService {
         }
     }
     async notification(idOrder:number){
-        for (let chatId of process.env.BOT_CHAT_ID.split(",")) {
+        for (let chatId of process.env.BOT_CHAT_ID_MESSAGE.split(",")) {
             await bot.sendMessage(chatId, 'Появился новый заказ', {
                 reply_markup: {
                     inline_keyboard: [
