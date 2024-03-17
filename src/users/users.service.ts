@@ -3,6 +3,7 @@ import {UsersModel} from './users.model';
 import {InjectModel} from '@nestjs/sequelize';
 import {UsersDto} from './users.dto';
 import {BotService} from "../bot/bot.service";
+import {Op} from "sequelize";
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,17 @@ export class UsersService {
 
     async findOne(chatId: string) {
         return this.usersRepository.findOne({where: {chatId}});
+    }
+    async findAdmin() {
+        const admins = await this.usersRepository.findAll({
+            where: {
+                [Op.or]: [
+                    { role: 'admin' },
+                    { role: 'superAdmin'}
+                ]
+            }
+        });
+        return admins.map(admin => admin.chatId);
     }
 
     async createUser(dto: UsersDto) {

@@ -4,7 +4,7 @@ import {Query} from '@nestjs/common';
 import {ApiTags} from "@nestjs/swagger";
 
 @ApiTags('Поиск')
-@Controller('search')
+@Controller('api/search')
 export class SearchController {
     constructor(private readonly searchService: SearchService) {
     }

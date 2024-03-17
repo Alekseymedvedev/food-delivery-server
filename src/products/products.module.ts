@@ -7,10 +7,11 @@ import { FileModule } from '../file/file.module';
 import { ProductsController } from './products.controller';
 import { OrderProductsModel } from 'src/orders/ordersProducts.model';
 import {BotService} from "../bot/bot.service";
+import * as TelegramBot from "node-telegram-bot-api";
 
 @Module({
   controllers: [ProductsController],
-  providers: [ProductsService,BotService],
+  providers: [ProductsService,BotService,TelegramBot],
   imports: [
     SequelizeModule.forFeature([ProductsModel, CategoriesModel,OrderProductsModel]),
     FileModule,

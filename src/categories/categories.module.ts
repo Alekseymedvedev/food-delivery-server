@@ -9,10 +9,11 @@ import {BotService} from "../bot/bot.service";
 import {TokenService} from "../token/token.service";
 import {JwtService} from "@nestjs/jwt";
 import {JwtStrategy} from "../strategy/strategy";
+import * as TelegramBot from "node-telegram-bot-api";
 
 @Module({
   controllers: [CategoriesController],
-  providers: [CategoriesService,BotService,TokenService, JwtService,JwtStrategy],
+  providers: [CategoriesService,BotService,TokenService, JwtService,JwtStrategy,TelegramBot],
   imports: [
     SequelizeModule.forFeature([ProductsModel, CategoriesModel]),
     FileModule,

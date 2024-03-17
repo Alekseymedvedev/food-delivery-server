@@ -10,18 +10,21 @@ export class AuthService {
                 private tokenService: TokenService,
                 private readonly botService: BotService) {
     }
+
     async authentication(dto: UsersDto) {
+        console.log(dto)
         try {
             const existUser = await this.usersService.findOne(`${dto.chatId}`)
             const payload = {chatId: dto.chatId};
-
+            const adminChatId = await this.usersService.findAdmin()
+            // await this.botService.getContacts(dto.chatId)
             if (!existUser) {
                 const user = await this.usersService.createUser(dto)
                 const {id, chatId, username} = user
-                await this.botService.newAdmin(chatId)
+                await this.botService.newAdmin(user, adminChatId)
                 return {id, chatId, username, access_token: await this.tokenService.generateJwtToken(payload)};
             } else {
-                return {existUser, access_token: await this.tokenService.generateJwtToken({...payload,role:existUser.role})};
+                return {existUser, access_token: await this.tokenService.generateJwtToken({...payload, role: existUser.role})};
             }
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при создании или авторизации пользователя: ${e}`)

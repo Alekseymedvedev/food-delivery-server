@@ -7,7 +7,7 @@ import {UpdateOrderDto} from "./dto/update-order.dto";
 import {JwtAuthGuard} from "../auth/auth.guard";
 
 @ApiTags('Заказы')
-@Controller('orders')
+@Controller('api/orders')
 export class OrdersController {
     constructor(private readonly ordersService: OrdersService) {
     }

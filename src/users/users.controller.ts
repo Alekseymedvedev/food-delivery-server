@@ -7,7 +7,7 @@ import {JwtAuthGuard} from "../auth/auth.guard";
 import {ProductsModel} from "../products/products.model";
 
 @ApiTags('Пользователь')
-@Controller('user')
+@Controller('api/user')
 export class UsersController {
     constructor(private usersService: UsersService) {
     }

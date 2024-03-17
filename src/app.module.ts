@@ -16,6 +16,10 @@ import {SearchModule} from './search/search.module';
 import {AuthModule} from './auth/auth.module';
 import {TokenModule} from './token/token.module';
 import { BotModule } from './bot/bot.module';
+import { TextMessageModule } from './text-message/text-message.module';
+import { ContactsModule } from './contacts/contacts.module';
+import {TextMessageModel} from "./text-message/text-message.model";
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
     imports: [
@@ -30,7 +34,7 @@ import { BotModule } from './bot/bot.module';
             username: process.env.DATA_BASE_USERNAME,
             password: process.env.DATA_BASE_PASSWORD,
             database: process.env.DATA_BASE_NAME,
-            models: [ProductsModel, CategoriesModel, UsersModel, OrdersModel, OrderProductsModel],
+            models: [ProductsModel, CategoriesModel, UsersModel, OrdersModel, OrderProductsModel,TextMessageModel],
             autoLoadModels: true,
         }),
         ProductsModule,
@@ -40,7 +44,9 @@ import { BotModule } from './bot/bot.module';
         SearchModule,
         AuthModule,
         TokenModule,
-        BotModule
+        BotModule,
+        TextMessageModule,
+        ContactsModule
     ],
 })
 export class AppModule {

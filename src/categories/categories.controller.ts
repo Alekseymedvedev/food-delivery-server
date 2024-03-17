@@ -6,7 +6,7 @@ import { CategoriesModel } from './categories.model';
 import { CategoriesDto } from './categories.dto';
 import {JwtAuthGuard} from "../auth/auth.guard";
 @ApiTags('Категории')
-@Controller('categories')
+@Controller('api/categories')
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
   @ApiOperation({ summary: 'Создание категории продукта' })
