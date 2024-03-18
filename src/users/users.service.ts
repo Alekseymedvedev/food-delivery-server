@@ -12,15 +12,29 @@ export class UsersService {
         private readonly botService: BotService) {
     }
 
-    async findOne(chatId: string) {
+    async gelAllUsers() {
+        try {
+            const users = await this.usersRepository.findAll();
+            return users.map(user => user.chatId);
+        } catch (e) {
+            await this.botService.errorMessage(`Произошла ошибка при получении всех пользователей: ${e}`)
+            throw new HttpException(
+                `Произошла ошибка при получении всех пользователей: ${e}`,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    async findOne(chatId: string ) {
         return this.usersRepository.findOne({where: {chatId}});
     }
+
     async findAdmin() {
         const admins = await this.usersRepository.findAll({
             where: {
                 [Op.or]: [
-                    { role: 'admin' },
-                    { role: 'superAdmin'}
+                    {role: 'admin'},
+                    {role: 'superAdmin'}
                 ]
             }
         });

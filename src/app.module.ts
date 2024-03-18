@@ -15,18 +15,18 @@ import {OrderProductsModel} from './orders/ordersProducts.model';
 import {SearchModule} from './search/search.module';
 import {AuthModule} from './auth/auth.module';
 import {TokenModule} from './token/token.module';
-import { BotModule } from './bot/bot.module';
-import { TextMessageModule } from './text-message/text-message.module';
-import { ContactsModule } from './contacts/contacts.module';
+import {BotModule} from './bot/bot.module';
+import {TextMessageModule} from './text-message/text-message.module';
 import {TextMessageModel} from "./text-message/text-message.model";
-import { ContactsModule } from './contacts/contacts.module';
+import {ContactsModule} from './contacts/contacts.module';
+import {ContactsModel} from "./contacts/contacts.model";
 
 @Module({
     imports: [
         ConfigModule.forRoot({
             envFilePath: '.env',
         }),
-        ServeStaticModule.forRoot({rootPath: path.resolve(__dirname,'..', 'static')}),
+        ServeStaticModule.forRoot({rootPath: path.resolve(__dirname, '..', 'static')}),
         SequelizeModule.forRoot({
             dialect: 'postgres',
             host: process.env.DATA_BASE_HOST,
@@ -34,7 +34,7 @@ import { ContactsModule } from './contacts/contacts.module';
             username: process.env.DATA_BASE_USERNAME,
             password: process.env.DATA_BASE_PASSWORD,
             database: process.env.DATA_BASE_NAME,
-            models: [ProductsModel, CategoriesModel, UsersModel, OrdersModel, OrderProductsModel,TextMessageModel],
+            models: [ProductsModel, CategoriesModel, UsersModel, OrdersModel, OrderProductsModel, TextMessageModel, ContactsModel],
             autoLoadModels: true,
         }),
         ProductsModule,

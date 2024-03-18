@@ -21,8 +21,8 @@ export class ContactsService {
     }
 
     async update(id:number,dto:ContactDto) {
-        const product = await this.contactsRepository.findOne({ where: { id } });
+        const contacts = await this.contactsRepository.findOne({ where: { id } });
 
-        return await product.update({...dto});
+        return await contacts.update({...dto});
     }
 }

@@ -5,9 +5,9 @@ dotenv.config();
 import * as TelegramBot from 'node-telegram-bot-api'
 import {TextMessageService} from "../text-message/text-message.service";
 import {ContactsService} from "../contacts/contacts.service";
+import {UsersService} from "../users/users.service";
 
 const token = process.env.BOT_TOKEN;
-
 export const tgBot = new TelegramBot(token, {polling: true})
 
 
@@ -29,14 +29,19 @@ export class BotStartService {
     newMessage: string
     welcomeText: string
     contacts: { address: string, phone: string, worktime: string }
+    contactsMessage: string
+    mailingText: string
 
-    constructor(private textService: TextMessageService, private contactsService: ContactsService) {
+    constructor(private textService: TextMessageService,
+                private contactsService: ContactsService,
+                private usersService: UsersService,) {
         this.bot = tgBot
         this.start()
     }
 
-    async callbackQuery(message: string, textBtn: string, callbackData: string) {
-        this.dataBtn = callbackData
+    async callbackQuery(message: string, textBtn: string, callbackData?: string, dataBtn?: string) {
+        console.log(dataBtn)
+        this.dataBtn = dataBtn ? dataBtn : ''
         await this.bot.sendMessage(this.chatId, message, {
             reply_markup: {
                 inline_keyboard: [
@@ -46,90 +51,163 @@ export class BotStartService {
         })
     }
 
-    start() {
+    async mailing(message: string) {
+        await this.bot.sendMessage(this.chatId, `Текст рассылки\n${message}`, {
+            reply_markup: {
+                inline_keyboard: [
+                    [{text: 'Разослать', callback_data: 'sendMailing'}, {text: 'Редактировать', callback_data: 'editMailing'}]
+                ]
+            }
+        })
+    }
 
+    start() {
         this.bot.on('message', async msg => {
             console.log(msg)
-            const chatId = msg.chat.id
+            this.chatId = msg.chat.id
             const text = msg.text
             this.newMessage = text
+            const welcomeText = await this.textService.findOne('welcomeMessage')
+            this.welcomeText = welcomeText?.text
+
+            const mailingText = await this.textService.findOne('mailingText')
+            this.mailingText = mailingText?.text
+
+            this.contacts = await this.contactsService.findOne(1)
             if (text === '/start') {
-                const welcomeText = await this.textService.findOne('welcomeMessage')
-                const contacts = await this.contactsService.findOne(1)
-                this.welcomeText = welcomeText.text
-                this.contacts = contacts
-                await this.bot.sendMessage(chatId, this.welcomeText, {
+                const user = await this.usersService.findOne(`${this.chatId}`)
+                const arrButtons = [
+                    user?.role === 'superAdmin' ?
+                        [{text: keyboardBtn.contacts},{text: keyboardBtn.admin}]
+                        :
+                        [{text: keyboardBtn.contacts}]
+                ]
+
+
+
+                this.contactsMessage = `Адрес заведения: ${this.contacts?.address}\nНомер телефона заведения: ${this.contacts?.phone}\nЧасы работы: ${this.contacts?.worktime}`
+
+                await this.bot.sendMessage(this.chatId, `Добро пожаловать ${msg.chat.username && msg.chat.username}\n${this.welcomeText}`, {
                     disable_notification: true,
                     reply_markup: {
                         resize_keyboard: true,
-                        keyboard: [
-                            [{text: keyboardBtn.contacts}, {text: keyboardBtn.admin,}]
-                        ]
+                        keyboard: arrButtons
                     },
+                    parse_mode: "HTML"
                 })
                 return
             }
             if (msg.text === keyboardBtn.admin) {
-                await this.bot.sendMessage(chatId, keyboardBtn.admin, {
+                await this.bot.sendMessage(this.chatId, keyboardBtn.admin, {
                     disable_notification: true,
                     reply_markup: {
                         inline_keyboard: [
                             [
                                 {text: inlineKeyboardBtn.contacts, callback_data: 'contacts',},
                                 {text: inlineKeyboardBtn.welcomeMessage, callback_data: 'welcomeMessage',}
-                            ]
+                            ],
+                            [{text: 'Рассылка', callback_data: 'mailing'}]
 
                         ],
                     },
                 })
             }
-            if (msg.text === keyboardBtn.admin) {
-                await this.bot.sendMessage(
-                    this.chatId,
-                    `
-                    Адрес заведения: ${this.contacts.address}\n
-                    Номер телефона заведения: ${this.contacts.phone}\n
-                    Часы работы: ${this.contacts.worktime}\n
-                    `
-                )
+            if (msg.text === keyboardBtn.contacts) {
+                await this.bot.sendMessage(this.chatId, `Наши контакты\n${this.contactsMessage}`, {parse_mode: "HTML"})
+                return
             }
+            if (this.dataBtn === 'editContacts' && this.newMessage) {
+                await this.callbackQuery(this.newMessage, 'Сохранить контакты', 'saveContacts')
+                return
+            }
+            if (this.dataBtn === 'editWelcomeMessage' && this.newMessage) {
+                await this.callbackQuery(this.newMessage, 'Сохранить сообщение', 'saveWelcomeMessage')
+                return
+            }
+            if (this.dataBtn === 'newMailing' && this.newMessage) {
+                const text = `Текст рассылки\n${this.newMessage}`
+                await this.callbackQuery(text, 'Сохранить', 'saveMailing')
+                return
+            }
+
         })
 
         this.bot.on('callback_query', async msg => {
-            this.chatId = msg.from.id
+            // Сброс данных
+            if (msg.data === 'reset') {
+                this.dataBtn = ''
+                this.newMessage = ''
+            }
+
+            // Кнопка редактирования контактов
             if (msg.data === 'contacts') {
-                await this.callbackQuery(
-                    `
-                    Контакты:\n\n
-                    Адрес заведения: ${this.contacts.address}\n
-                    Номер телефона заведения: ${this.contacts.phone}\n
-                    Часы работы: ${this.contacts.worktime}\n\n
-                    Для редактирования введите контакты через запятую.
-                    Напирмер:улю Ленина д1, с 10.00 до 22.00, +7(911)-111-11-11
-                    `,
-                    'Редактировать контакты',
-                    'editContacts')
+                const text = `Контакты\n\nАдрес заведения: ${this.contacts?.address}\nНомер телефона заведения: ${this.contacts?.phone}\nЧасы работы: ${this.contacts?.worktime}\n\nДля редактирования введите контакты через запятую.\n\nНапирмер: ул. Ленина д1, с 10.00 до 22.00, +7(911)-111-11-11`
+                await this.callbackQuery(text, 'Отменить', 'reset', 'editContacts')
+                return
             }
+
+            if (msg.data === 'saveContacts') {
+                const arr = this.newMessage.split(',')
+                const data = {address: arr[0], worktime: arr[1], phone: arr[2]}
+                if (this.contacts) {
+                    await this.contactsService.update(1, data)
+                        .then(() => this.bot.sendMessage(this.chatId, `Сохранено`,))
+                } else {
+                    await this.contactsService.create(data)
+                        .then(() => this.bot.sendMessage(this.chatId, `Сохранено`,))
+                }
+            }
+
+            // Кнопка редактирования приветственного сообщения
             if (msg.data === 'welcomeMessage') {
-                await this.callbackQuery('Приветственное сообщение', 'Сохранить приветственное сообщение', 'saveWelcomeMessage')
+                const text = `Приветственное сообщение:\n\n${this.welcomeText}\n\nДля редактирования введите текст`
+                await this.callbackQuery(text, 'Отменить', 'reset', 'editWelcomeMessage')
+                return
             }
+
             if (msg.data === 'saveWelcomeMessage') {
                 if (this.welcomeText) {
                     await this.textService.update({text: this.newMessage, type: 'welcomeMessage'})
+                    return
                 } else {
                     await this.textService.create({text: this.newMessage, type: 'welcomeMessage'})
+                    return
                 }
-                await this.bot.sendMessage(this.chatId, 'Сообщение сохранено')
             }
-            if (msg.data === 'editContacts') {
-                const arr = this.newMessage.split(',')
-                this.contacts = {address:arr[0],worktime:arr[1],phone:arr[2]}
-                if (this.welcomeText) {
-                    await this.contactsService.update(1,this.contacts)
+            // Кнопка редактирования рассылки
+            if (msg.data === 'mailing') {
+                await this.mailing(this.mailingText)
+                return
+            }
+            if (msg.data === 'editMailing') {
+                this.dataBtn = 'newMailing'
+                await this.bot.sendMessage(this.chatId, 'Введите сообщение')
+                return
+            }
+            if (msg.data === 'saveMailing' && this.newMessage) {
+                if (this.mailingText) {
+                    await this.textService.update({text: this.newMessage, type: 'mailingText'})
+                        .then(()=>this.mailing(this.newMessage))
+                    return
                 } else {
-                    await this.contactsService.create(this.contacts)
+                    await this.textService.create({text: this.newMessage, type: 'mailingText'})
+                        .then(()=> this.mailing(this.newMessage))
+                    return
                 }
-                await this.callbackQuery('Контакты', 'Сохранить контакты', 'saveContacts')
+            }
+            if (msg.data === 'sendMailing') {
+                const usersChatId = ['00000000', '1035451470']
+                // const usersChatId = await this.usersService.gelAllUsers()
+                const promises = usersChatId.map(chatId => this.bot.sendMessage(chatId, this.mailingText));
+
+                Promise.allSettled(promises)
+                    .then((results) => {
+                        const successList = results.filter(p => p.status === "fulfilled").length;
+                        const failureList = results.filter(p => p.status === "rejected").length;
+
+                        return this.bot.sendMessage(this.chatId, `Отправлено сообщений:\nУдачно: ${successList}\nНе удачно: ${failureList}`);
+                    })
+
             }
         })
     }
