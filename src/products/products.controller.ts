@@ -18,9 +18,10 @@ import {ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {JwtAuthGuard} from "../auth/auth.guard";
 
 @ApiTags('Продукты')
-@Controller('api/products')
+@Controller('/api/products')
 export class ProductsController {
-    constructor(private productsService: ProductsService) {}
+    constructor(private productsService: ProductsService) {
+    }
 
     @ApiOperation({summary: 'Создание продукта'})
     @ApiResponse({status: 200, type: ProductsModel})

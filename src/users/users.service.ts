@@ -9,10 +9,20 @@ import {Op} from "sequelize";
 export class UsersService {
     constructor(
         @InjectModel(UsersModel) private usersRepository: typeof UsersModel,
-        private readonly botService: BotService) {
+        private botService: BotService) {
     }
-
-    async gelAllUsers() {
+    async getAll() {
+        try {
+            return await this.usersRepository.findAll();
+        } catch (e) {
+            await this.botService.errorMessage(`Произошла ошибка при получении всех пользователей: ${e}`)
+            throw new HttpException(
+                `Произошла ошибка при получении всех пользователей: ${e}`,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+    async getChatId() {
         try {
             const users = await this.usersRepository.findAll();
             return users.map(user => user.chatId);

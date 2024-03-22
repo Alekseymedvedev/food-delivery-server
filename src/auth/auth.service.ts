@@ -8,21 +8,17 @@ import {BotService} from "../bot/bot.service";
 export class AuthService {
     constructor(private usersService: UsersService,
                 private tokenService: TokenService,
-                private readonly botService: BotService) {
+                private botService: BotService) {
     }
 
     async authentication(dto: UsersDto) {
-        console.log(dto)
         try {
             const existUser = await this.usersService.findOne(`${dto.chatId}`)
             const payload = {chatId: dto.chatId};
-            const adminChatId = await this.usersService.findAdmin()
-            // await this.botService.getContacts(dto.chatId)
             if (!existUser) {
                 const user = await this.usersService.createUser(dto)
                 const {id, chatId, username} = user
-                await this.botService.newAdmin(user, adminChatId)
-                return {id, chatId, username, access_token: await this.tokenService.generateJwtToken(payload)};
+                return {id, chatId, username, access_token: await this.tokenService.generateJwtToken({...payload, role: 'user'})};
             } else {
                 return {existUser, access_token: await this.tokenService.generateJwtToken({...payload, role: existUser.role})};
             }

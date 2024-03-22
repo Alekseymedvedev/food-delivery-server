@@ -8,4 +8,5 @@ export class ProductsDto {
   readonly categoryId: number;
   readonly count: number;
   readonly disabled: boolean;
+  readonly grams: string;
 }

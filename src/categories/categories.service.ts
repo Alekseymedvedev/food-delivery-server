@@ -71,7 +71,7 @@ export class CategoriesService {
     async deleteCategory(id: number): Promise<void> {
         try {
             const category = await this.getCategoryById(id);
-            await category.destroy();
+           return await category.destroy();
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при удалении категории: ${e}`)
             throw new HttpException(

@@ -8,11 +8,11 @@ import {TokenService} from "../token/token.service";
 import {JwtService} from "@nestjs/jwt";
 import {JwtStrategy} from "../strategy/strategy";
 import {BotService} from "../bot/bot.service";
-import * as TelegramBot from "node-telegram-bot-api";
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService,UsersService,TokenService, JwtService,JwtStrategy,BotService,TelegramBot],
+  providers: [AuthService,UsersService,TokenService, JwtService,JwtStrategy,BotService],
   imports: [SequelizeModule.forFeature([UsersModel])],
+  exports:[AuthService]
 })
 export class AuthModule {}

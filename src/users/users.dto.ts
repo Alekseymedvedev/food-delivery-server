@@ -1,7 +1,7 @@
 export class UsersDto {
     readonly chatId: string;
     readonly username?: string;
-    readonly queryId: string;
+    readonly queryId?: string;
     readonly role?: string;
     readonly email?: string;
     readonly gender?: string;

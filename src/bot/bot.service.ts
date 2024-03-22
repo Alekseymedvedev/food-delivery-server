@@ -1,25 +1,18 @@
 import {Injectable} from '@nestjs/common';
-import * as TelegramBot from "node-telegram-bot-api";
-import {tgBot} from "./bot-start.service";
+import {tgBot} from "./bot";
 
 @Injectable()
-export class BotService {
-
-    bot: TelegramBot
-
-    constructor() {
-        this.bot = tgBot
-    }
+export class BotService{
 
     async errorMessage(text: string) {
         for (let chatId of process.env.BOT_CHAT_ID_MESSAGE_ERROR.split(",")) {
-            await this.bot.sendMessage(chatId, `${text}`)
+            await tgBot.sendMessage(chatId, `${text}`)
         }
     }
 
     async notification(idOrder: number) {
         for (let chatId of process.env.BOT_CHAT_ID_MESSAGE.split(",")) {
-            await this.bot.sendMessage(chatId, 'Появился новый заказ', {
+            await tgBot.sendMessage(chatId, 'Появился новый заказ', {
                 reply_markup: {
                     inline_keyboard: [
                         [{text: 'Посмотреть заказ', web_app: {url: `${process.env.WEB_APP_URL}/order/${idOrder}`}}]
@@ -31,13 +24,8 @@ export class BotService {
 
     async newAdmin(user: any, adminId: string[]) {
         for (let admin of adminId) {
-            await this.bot.sendMessage(admin,
-                `
-                    Создан новый пользователь!\n
-                    ID: 23235 | Неформальный\n
-                    Chat ID: ${user.chatId}\n
-                    Source: none
-                `,
+            await tgBot.sendMessage(admin,
+                `Создан новый пользователь!\nID: 23235 | Неформальный\nChat ID: ${user.chatId}\nSource: none`,
                 {
                     reply_markup: {
                         inline_keyboard: [
@@ -50,7 +38,7 @@ export class BotService {
 
     async updateUser(chatId: string) {
         for (let admin of process.env.BOT_CHAT_ID_MESSAGE.split(",")) {
-            await this.bot.sendMessage(admin, `Изменена роль пользователя ${chatId}`, {
+            await tgBot.sendMessage(admin, `Изменена роль пользователя ${chatId}`, {
                 reply_markup: {
                     inline_keyboard: [
                         [{text: 'Посмотреть пользователя', web_app: {url: `${process.env.WEB_APP_URL}/update-user/${chatId}`}}]

@@ -14,6 +14,7 @@ interface ProductsCreateAttrs {
     categoryId: number;
     count: number;
     disabled: boolean;
+    grams: string;
 }
 
 @Table({tableName: 'products'})
@@ -46,6 +47,10 @@ export class ProductsModel extends Model<ProductsModel, ProductsCreateAttrs> {
     @ApiProperty({example: 'Краткое описание', description: 'Краткое описание'})
     @Column({type: DataType.STRING, allowNull: true})
     description: string;
+
+    @ApiProperty({example: 'Краткое описание', description: 'Краткое описание'})
+    @Column({type: DataType.STRING, allowNull: true})
+    grams: string;
 
     @ApiProperty({example: 1, description: 'Количество товаров при заказе'})
     @Column({type: DataType.INTEGER, allowNull: true, defaultValue: 1})

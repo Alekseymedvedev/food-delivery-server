@@ -11,8 +11,14 @@ import {ProductsModel} from "../products/products.model";
 export class UsersController {
     constructor(private usersService: UsersService) {
     }
+    @ApiOperation({summary: 'Получение всех пользователей'})
+    @ApiResponse({status: 200, type: UsersModel})
+    @Get('')
+    getAll() {
+        return this.usersService.getAll();
+    }
     @ApiOperation({summary: 'Получение пользователя'})
-    @ApiResponse({status: 200, type: ProductsModel})
+    @ApiResponse({status: 200, type: UsersModel})
     @Get(':id')
     getOne(@Param('id') id: string) {
         return this.usersService.findOne(id);

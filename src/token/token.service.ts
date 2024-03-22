@@ -10,7 +10,7 @@ export class TokenService {
     async generateJwtToken(payload) {
         return this.jwtService.sign(payload, {
             secret: process.env.JWT_ACCESS_SECRET,
-            expiresIn: 60*60
+            expiresIn: 60*600000
         })
     }
 }

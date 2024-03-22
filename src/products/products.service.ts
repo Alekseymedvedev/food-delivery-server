@@ -17,11 +17,7 @@ export class ProductsService {
   async createProduct(dto: ProductsDto, file: string) {
     try {
       const fileName = await this.fileService.createFile(file);
-      const product = await this.ProductsRepository.create({
-        ...dto,
-        image: fileName,
-      });
-      return product;
+      return await this.ProductsRepository.create({...dto,image: fileName,});
     } catch (e) {
       await this.botService.errorMessage(`Произошла ошибка при создании продукта: ${e}`)
       throw new HttpException(
@@ -74,7 +70,7 @@ export class ProductsService {
   async deleteProduct(id: number): Promise<void> {
     try {
       const product = await this.ProductsRepository.findByPk(id);
-      await product.destroy();
+     return await product.destroy();
     } catch (e) {
       await this.botService.errorMessage(`Произошла ошибка при удалении продукта: ${e}`)
       throw new HttpException(
