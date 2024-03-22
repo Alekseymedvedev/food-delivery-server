@@ -7,7 +7,7 @@ export class TextMessageModel extends Model {
   @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true,})
   id: number;
 
-  @Column({ type: DataType.TEXT, allowNull: false })
+  @Column({ type: DataType.TEXT, allowNull: false, defaultValue:'Hello' })
   text: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
