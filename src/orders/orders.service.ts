@@ -32,7 +32,7 @@ export class OrdersService {
                     {where: {products: product.id}},
                 );
             }
-            await this.botService.notification(order.id)
+            await this.botService.notification(order)
             return order;
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при создании заказа: ${e}`)

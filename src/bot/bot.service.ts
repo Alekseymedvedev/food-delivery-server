@@ -10,12 +10,16 @@ export class BotService{
         }
     }
 
-    async notification(idOrder: number) {
+    async notification(order: any) {
         for (let chatId of process.env.BOT_CHAT_ID_MESSAGE.split(",")) {
-            await tgBot.sendMessage(chatId, 'Появился новый заказ', {
+
+            await tgBot.sendMessage(
+                chatId,
+                `Появился новый заказ \nАдрес:${order.address}\nИмя:${order.name}\nТелефон:${order.phone}\nТип доставки:${order.typeDelivery}\nМетод оплаты:${order.paymentMethod}`,
+                {
                 reply_markup: {
                     inline_keyboard: [
-                        [{text: 'Посмотреть заказ', web_app: {url: `${process.env.WEB_APP_URL}/order/${idOrder}`}}]
+                        [{text: 'Посмотреть заказ', web_app: {url: `${process.env.WEB_APP_URL}/order/${order.id}`}}]
                     ]
                 }
             })
