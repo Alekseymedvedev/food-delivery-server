@@ -13,7 +13,6 @@ async function bootstrap() {
         origin: [process.env.WEB_APP_URL]
       }
     });
-    app.enableCors();
     const config = new DocumentBuilder()
       .setTitle('Сервис доставки еды')
       .setDescription('Документация REST API')
