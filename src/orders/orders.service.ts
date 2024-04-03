@@ -6,13 +6,15 @@ import {InjectModel} from '@nestjs/sequelize';
 import {ProductsModel} from 'src/products/products.model';
 import {OrderProductsModel} from './ordersProducts.model';
 import {BotService} from "../bot/bot.service";
+import {UsersService} from "../users/users.service";
 
 @Injectable()
 export class OrdersService {
     constructor(
         @InjectModel(OrdersModel)
         private ordersRepository: typeof OrdersModel,
-        private readonly botService: BotService
+        private readonly botService: BotService,
+        private readonly usersService: UsersService,
     ) {
     }
 
@@ -32,7 +34,8 @@ export class OrdersService {
                     {where: {products: product.id}},
                 );
             }
-            await this.botService.notification(order)
+            const adminId = await this.usersService.findAdmin()
+            await this.botService.notification(adminId,order)
             return order;
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при создании заказа: ${e}`)

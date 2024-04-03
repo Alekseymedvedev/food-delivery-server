@@ -7,12 +7,14 @@ import { ProductsModel } from 'src/products/products.model';
 import { OrderProductsModel } from './ordersProducts.model';
 import {BotService} from "../bot/bot.service";
 import * as TelegramBot from "node-telegram-bot-api";
+import {UsersService} from "../users/users.service";
+import {UsersModel} from "../users/users.model";
 
 @Module({
   controllers: [OrdersController],
-  providers: [OrdersService,BotService,TelegramBot],
+  providers: [OrdersService,BotService,TelegramBot,UsersService],
   imports: [
-    SequelizeModule.forFeature([OrderProductsModel,OrdersModel, ProductsModel]),
+    SequelizeModule.forFeature([OrderProductsModel,OrdersModel, ProductsModel,UsersModel]),
   ],
   exports: [OrdersService],
 })

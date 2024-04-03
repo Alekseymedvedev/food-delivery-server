@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {tgBot} from "./bot";
+import {CreateOrderDto} from "../orders/dto/create-order.dto";
 
 @Injectable()
 export class BotService{
@@ -10,12 +11,14 @@ export class BotService{
         }
     }
 
-    async notification(order: any) {
-        for (let chatId of process.env.BOT_CHAT_ID_MESSAGE.split(",")) {
+    async notification(adminId,order) {
+        for (let chatId of adminId) {
 
             await tgBot.sendMessage(
                 chatId,
-                `Появился новый заказ \nАдрес:${order.address}\nИмя:${order.name}\nТелефон:${order.phone}\nТип доставки:${order.typeDelivery}\nМетод оплаты:${order.paymentMethod}`,
+                `Появился новый заказ \nАдрес:${order.address}\nИмя:${order.name}\nТелефон:${order.phone}\nТип доставки:${order.typeDelivery}\nМетод оплаты:${order.paymentMethod}
+                
+                `,
                 {
                 reply_markup: {
                     inline_keyboard: [

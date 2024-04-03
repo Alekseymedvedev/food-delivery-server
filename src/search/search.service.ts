@@ -11,14 +11,17 @@ export class SearchService {
     try{
       const products = await ProductsModel.findAll({
           where: { title: { [Op.iLike]: `%${query["search"]}%` } },
-        include:{all:true}
       });
       const categories = await CategoriesModel.findAll({
         where: { title: { [Op.iLike]: `%${query["search"]}%` } },
         include:{all:true}
       });
-      const productsInCategories = categories.map(item=>item.products)
-      return [...productsInCategories[0], ...products];
+
+      let productsInCategories = []
+      for (let item of categories){
+        productsInCategories.push(...item.products)
+      }
+      return [...productsInCategories, ...products];
     }catch(e){
       await this.botService.errorMessage(`Произошла ошибка при поиске: ${e}`)
     }
