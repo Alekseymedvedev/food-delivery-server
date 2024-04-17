@@ -17,6 +17,6 @@ import * as TelegramBot from "node-telegram-bot-api";
   imports: [
     SequelizeModule.forFeature([ProductsModel, CategoriesModel]),
     FileModule,
-  ],
+  ]
 })
 export class CategoriesModule {}

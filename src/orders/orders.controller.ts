@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Body, Param, Patch, UseGuards} from '@nestjs/common';
+import {Controller, Get, Post, Body, Param, Patch, UseGuards, Query} from '@nestjs/common';
 import {OrdersService} from './orders.service';
 import {CreateOrderDto} from './dto/create-order.dto';
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
@@ -25,6 +25,12 @@ export class OrdersController {
     findAll() {
         return this.ordersService.findAllOrder();
     }
+    @ApiOperation({summary: 'Получение статистики'})
+    @ApiResponse({status: 200, type: OrdersModel})
+    @Get('statistics')
+    statistics(@Query() query: string) {
+        return this.ordersService.statistics(query);
+    }
 
     @ApiOperation({summary: 'Получение заказов пользователя'})
     @ApiResponse({status: 200, type: OrdersModel})
@@ -39,6 +45,7 @@ export class OrdersController {
     findOne(@Param('id') id: string) {
         return this.ordersService.findOneOrder(+id);
     }
+
 
     @Patch('user/:id')
     updateNotification(@Param('id') id: number, @Body() dto: UpdateOrderDto,) {
