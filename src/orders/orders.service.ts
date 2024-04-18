@@ -127,6 +127,7 @@ export class OrdersService {
         try {
             let productsInOrders = []
             let categoryStat = []
+            let ordersCounts = []
             const orders = await this.ordersRepository.findAll({
                 where: {
                     createdAt: {
@@ -140,23 +141,22 @@ export class OrdersService {
                 productsInOrders.push(...products.orderProducts)
             }
             if (query.catId) {
-                const arr = productsInOrders.filter(item => item.categoryId == query.catId)
-                const productsCounts = arr.reduce((item, product) => {
-                    console.log(product)
-                    console.log(item)
+                ordersCounts = productsInOrders.filter(item => item.categoryId == query.catId)
+                const productsCounts = ordersCounts.reduce((item, product) => {
                     const productId = product.id;
-                    item[productId] = item[productId] || {count: 0, products: []};
+                    item[productId] = item[productId] || {count: 0, title: product.title};
                     item[productId].count++;
-                    item[productId].products.push(product);
+                    productsInOrders.push(product);
 
                     return item;
                 }, {});
 
-                for (const categoryId in productsCounts) {
-                    categoryStat.push({category: categoryId, count: productsCounts[categoryId].count})
+                for (const id in productsCounts) {
+                    categoryStat.push({title: productsCounts[id].title, count: productsCounts[id].count,})
                 }
-                // return {arr}
+                // return {productsCounts}
             } else {
+                ordersCounts = orders
                 const categoryCounts = productsInOrders.reduce((item, product) => {
                     const categoryId = product.categoryId;
                     item[categoryId] = item[categoryId] || {count: 0, products: []};
@@ -168,13 +168,13 @@ export class OrdersService {
 
                 for (const categoryId in categoryCounts) {
                     const category = await this.categoriesRepository.findOne({where: {id: categoryId}})
-                    categoryStat.push({category: category.title, count: categoryCounts[categoryId].count})
+                    categoryStat.push({title: category.title, count: categoryCounts[categoryId].count})
                 }
 
 
             }
             const gain = productsInOrders.reduce((total, product) => total + product.price * product.count, 0);
-            const countOfOrders = orders.length;
+            const countOfOrders = ordersCounts.length;
             const averageCheck = gain / countOfOrders;
             return {gain, countOfOrders, averageCheck, categoryStat};
 
