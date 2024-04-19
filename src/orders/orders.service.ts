@@ -126,12 +126,16 @@ export class OrdersService {
 
         try {
             let productsInOrders = []
-            let categoryStat = []
+            let stat = []
             let ordersCounts = []
+            const startTime = new Date(query.startTime).toISOString()
+            const endTime = new Date(query.endTime).toISOString()
+            console.log('startTime',startTime)
+            console.log('endTime',endTime)
             const orders = await this.ordersRepository.findAll({
                 where: {
                     createdAt: {
-                        [Op.between]: [query.startTime, query.endTime],
+                        [Op.between]: [startTime, endTime],
                     },
                 },
                 include: {all: true}
@@ -152,9 +156,8 @@ export class OrdersService {
                 }, {});
 
                 for (const id in productsCounts) {
-                    categoryStat.push({title: productsCounts[id].title, count: productsCounts[id].count,})
+                    stat.push({title: productsCounts[id].title, count: productsCounts[id].count,})
                 }
-                // return {productsCounts}
             } else {
                 ordersCounts = orders
                 const categoryCounts = productsInOrders.reduce((item, product) => {
@@ -162,21 +165,18 @@ export class OrdersService {
                     item[categoryId] = item[categoryId] || {count: 0, products: []};
                     item[categoryId].count++;
                     item[categoryId].products.push(product);
-
                     return item;
                 }, {});
 
                 for (const categoryId in categoryCounts) {
                     const category = await this.categoriesRepository.findOne({where: {id: categoryId}})
-                    categoryStat.push({title: category.title, count: categoryCounts[categoryId].count})
+                    stat.push({id:categoryId,title: category.title, count: categoryCounts[categoryId].count})
                 }
-
-
             }
             const gain = productsInOrders.reduce((total, product) => total + product.price * product.count, 0);
             const countOfOrders = ordersCounts.length;
             const averageCheck = gain / countOfOrders;
-            return {gain, countOfOrders, averageCheck, categoryStat};
+            return {gain, countOfOrders, averageCheck, stat};
 
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при получении статистики: ${e}`)
