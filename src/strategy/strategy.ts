@@ -1,11 +1,10 @@
 import {PassportStrategy} from "@nestjs/passport";
 import {ExtractJwt, Strategy} from "passport-jwt";
-import {Injectable, UnauthorizedException} from "@nestjs/common";
-import {BotService} from "../bot/bot.service";
+import {Injectable} from "@nestjs/common";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private readonly botService: BotService) {
+    constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: process.env.JWT_ACCESS_SECRET
@@ -13,10 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        console.log('payload,',payload)
-        return payload?.role === 'superAdmin' || payload?.role === 'admin'
-
-
+        return payload?.role !== 'user'
     }
 }
 

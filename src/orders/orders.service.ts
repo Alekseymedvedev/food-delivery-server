@@ -39,7 +39,8 @@ export class OrdersService {
                 );
             }
             const adminId = await this.usersService.findAdmin()
-            await this.botService.notification(adminId, order)
+            const newOrder = await this.ordersRepository.findOne({where: {id:order.id},include: ProductsModel});
+            await this.botService.notification(adminId, newOrder)
             return order;
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при создании заказа: ${e}`)
@@ -130,8 +131,7 @@ export class OrdersService {
             let ordersCounts = []
             const startTime = new Date(query.startTime).toISOString()
             const endTime = new Date(query.endTime).toISOString()
-            console.log('startTime',startTime)
-            console.log('endTime',endTime)
+
             const orders = await this.ordersRepository.findAll({
                 where: {
                     createdAt: {

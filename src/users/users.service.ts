@@ -77,11 +77,11 @@ export class UsersService {
         }
     }
 
-    async updateRoleUser(chatId: string) {
+    async updateRoleUser(chatId: string,body) {
 
         try {
             const user = await this.usersRepository.findOne({where: {chatId}});
-            await user.update({role: 'admin'});
+            await user.update({role: body.role});
             await this.botService.updateUser(chatId)
             return user;
         } catch (e) {

@@ -25,8 +25,8 @@ export class UsersController {
     }
     @UseGuards(JwtAuthGuard)
     @Patch('/update/:id')
-    updateRole(@Param('id')  id:string) {
-        return this.usersService.updateRoleUser(id);
+    updateRole(@Param('id')  id:string,@Body() body) {
+        return this.usersService.updateRoleUser(id,body);
     }
 
     @ApiOperation({summary: 'Обновление данных пользователя'})

@@ -11,14 +11,15 @@ export class BotService{
         }
     }
 
-    async notification(adminId,order) {
+    async notification(adminId,order:any) {
+        let str =''
+        for (let i = 0; i < order.orderProducts.length; i++) {
+            str += `${order.orderProducts[i].title} ${order.orderProducts[i].count}\n`
+        }
         for (let chatId of adminId) {
-
             await tgBot.sendMessage(
                 chatId,
-                `Появился новый заказ \nАдрес:${order.address}\nИмя:${order.name}\nТелефон:${order.phone}\nТип доставки:${order.typeDelivery}\nМетод оплаты:${order.paymentMethod}
-                
-                `,
+                `Появился новый заказ \nАдрес:${order.address}\nИмя:${order.name}\nТелефон:${order.phone}\nТип доставки:${order.typeDelivery}\nМетод оплаты:${order.paymentMethod}\n${str}`,
                 {
                 reply_markup: {
                     inline_keyboard: [
