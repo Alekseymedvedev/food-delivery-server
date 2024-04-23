@@ -30,18 +30,8 @@ export class BotService{
         }
     }
 
-    async newAdmin(user: any, adminId: string[]) {
-        for (let admin of adminId) {
-            await tgBot.sendMessage(admin,
-                `Создан новый пользователь!\nID: 23235 | Неформальный\nChat ID: ${user.chatId}\nSource: none`,
-                {
-                    reply_markup: {
-                        inline_keyboard: [
-                            [{text: 'Посмотреть пользователя', web_app: {url: `${process.env.WEB_APP_URL}/update-user/${user.chatId}`}}]
-                        ]
-                    }
-                })
-        }
+    async userNotification(chatId: any, message: string) {
+        await tgBot.sendMessage(chatId, `${message}`)
     }
 
     async updateUser(chatId: string) {

@@ -39,7 +39,8 @@ export class OrdersService {
                 );
             }
             const adminId = await this.usersService.findAdmin()
-            const newOrder = await this.ordersRepository.findOne({where: {id:order.id},include: ProductsModel});
+            const newOrder = await this.ordersRepository.findOne({where: {id: order.id}, include: ProductsModel});
+
             await this.botService.notification(adminId, newOrder)
             return order;
         } catch (e) {
@@ -113,6 +114,8 @@ export class OrdersService {
         try {
             const order = await this.ordersRepository.findOne({where: {id}});
             await order.update({...dto});
+            const user = await this.usersService.findOneId(order.userId)
+            await this.botService.userNotification(user.chatId, `Изменен статус заказа на ${dto.status}`)
             return order;
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при изменении статуса заказа: ${e}`)
@@ -170,7 +173,7 @@ export class OrdersService {
 
                 for (const categoryId in categoryCounts) {
                     const category = await this.categoriesRepository.findOne({where: {id: categoryId}})
-                    stat.push({id:categoryId,title: category.title, count: categoryCounts[categoryId].count})
+                    stat.push({id: categoryId, title: category.title, count: categoryCounts[categoryId].count})
                 }
             }
             const gain = productsInOrders.reduce((total, product) => total + product.price * product.count, 0);

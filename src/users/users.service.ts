@@ -38,6 +38,9 @@ export class UsersService {
     async findOne(chatId: string ) {
         return this.usersRepository.findOne({where: {chatId}});
     }
+    async findOneId(id: number ) {
+        return this.usersRepository.findOne({where: {id}});
+    }
 
     async findAdmin() {
         const admins = await this.usersRepository.findAll({
