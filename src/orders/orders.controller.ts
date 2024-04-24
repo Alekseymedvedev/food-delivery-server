@@ -22,8 +22,8 @@ export class OrdersController {
     @ApiOperation({summary: 'Получение всех заказов'})
     @ApiResponse({status: 200, type: OrdersModel})
     @Get()
-    findAll() {
-        return this.ordersService.findAllOrder();
+    findAll(@Query() query: {page:string}) {
+        return this.ordersService.findAllOrder(query.page);
     }
     @ApiOperation({summary: 'Получение статистики'})
     @ApiResponse({status: 200, type: OrdersModel})

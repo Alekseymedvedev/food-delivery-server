@@ -52,14 +52,17 @@ export class OrdersService {
         }
     }
 
-    async findAllOrder() {
+    async findAllOrder(page: string) {
+
         try {
-            return this.ordersRepository.findAll({
+            const count = 10
+            return this.ordersRepository.findAndCountAll({
                 order: [
                     ['id', 'DESC']
                 ],
-                include: {all: true}
-            });
+                include: {all: true},
+                limit: parseInt(page) * count,
+            })
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при получении заказов: ${e}`)
             throw new HttpException(
@@ -115,7 +118,9 @@ export class OrdersService {
             const order = await this.ordersRepository.findOne({where: {id}});
             await order.update({...dto});
             const user = await this.usersService.findOneId(order.userId)
-            await this.botService.userNotification(user.chatId, `Изменен статус заказа на ${dto.status}`)
+            if (dto.status) {
+                await this.botService.userNotification(user.chatId, `Изменен статус заказа на ${dto.status}`)
+            }
             return order;
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при изменении статуса заказа: ${e}`)
