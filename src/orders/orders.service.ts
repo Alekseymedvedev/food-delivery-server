@@ -149,7 +149,6 @@ export class OrdersService {
 
             if (query.catId) {
                 productsInOrders = []
-                ordersCounts = []
                 stat = []
                 ordersCounts = productsInOrders.filter(item => item.categoryId == query.catId)
                 const productsCounts = ordersCounts.reduce((item, product) => {
