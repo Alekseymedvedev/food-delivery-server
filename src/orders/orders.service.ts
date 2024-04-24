@@ -148,9 +148,10 @@ export class OrdersService {
             }
 
             if (query.catId) {
+
+                ordersCounts = productsInOrders.filter(item => item.categoryId == query.catId)
                 productsInOrders = []
                 stat = []
-                ordersCounts = productsInOrders.filter(item => item.categoryId == query.catId)
                 const productsCounts = ordersCounts.reduce((item, product) => {
                     const productId = product.id;
                     item[productId] = item[productId] || {count: 0, title: product.title};
@@ -159,7 +160,6 @@ export class OrdersService {
 
                     return item;
                 }, {});
-
                 for (const id in productsCounts) {
                     stat.push({title: productsCounts[id].title, count: productsCounts[id].count,})
                 }
