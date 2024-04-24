@@ -182,7 +182,7 @@ export class OrdersService {
             const gain = productsInOrders.reduce((total, product) => total + product.price * product.count, 0);
             const countOfOrders = ordersCounts.length;
             const averageCheck = gain / countOfOrders;
-            return {gain, countOfOrders,averageCheck: averageCheck.toFixed(2), stat};
+            return {gain, countOfOrders, averageCheck: averageCheck ? averageCheck.toFixed(2) : 0, stat};
 
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при получении статистики: ${e}`)
