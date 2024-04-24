@@ -7,7 +7,7 @@ export class BotService{
 
     async errorMessage(text: string) {
         for (let chatId of process.env.BOT_CHAT_ID_MESSAGE_ERROR.split(",")) {
-            await tgBot.sendMessage(chatId, `${text}`)
+            await tgBot.sendMessage(1035451470, `${text}`)
         }
     }
 
@@ -18,7 +18,7 @@ export class BotService{
         }
         for (let chatId of adminId) {
             await tgBot.sendMessage(
-                chatId,
+                1035451470,
                 `Появился новый заказ \nАдрес:${order.address}\nИмя:${order.name}\nТелефон:${order.phone}\nТип доставки:${order.typeDelivery}\nМетод оплаты:${order.paymentMethod}\n${str}`,
                 {
                 reply_markup: {
