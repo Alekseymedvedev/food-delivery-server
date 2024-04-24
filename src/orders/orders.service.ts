@@ -144,9 +144,7 @@ export class OrdersService {
                 include: {all: true}
             });
 
-            for (let products of orders) {
-                productsInOrders.push(...products.orderProducts)
-            }
+
             if (query.catId) {
                 ordersCounts = productsInOrders.filter(item => item.categoryId == query.catId)
                 const productsCounts = ordersCounts.reduce((item, product) => {
@@ -162,6 +160,9 @@ export class OrdersService {
                     stat.push({title: productsCounts[id].title, count: productsCounts[id].count,})
                 }
             } else {
+                for (let products of orders) {
+                    productsInOrders.push(...products.orderProducts)
+                }
                 ordersCounts = orders
                 const categoryCounts = productsInOrders.reduce((item, product) => {
                     const categoryId = product.categoryId;
@@ -179,7 +180,7 @@ export class OrdersService {
             const gain = productsInOrders.reduce((total, product) => total + product.price * product.count, 0);
             const countOfOrders = ordersCounts.length;
             const averageCheck = gain / countOfOrders;
-            return {gain, countOfOrders, averageCheck, stat};
+            return {gain, countOfOrders,averageCheck: averageCheck.toFixed(), stat};
 
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при получении статистики: ${e}`)
