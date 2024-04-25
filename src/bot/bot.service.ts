@@ -12,9 +12,11 @@ export class BotService{
     }
 
     async notification(adminId,order:any) {
+        console.log(order.orderProducts[0])
         let str =''
         for (let i = 0; i < order.orderProducts.length; i++) {
-            str += `${order.orderProducts[i].title} ${order.orderProducts[i].OrderProductsModel.count}\n`
+            str += `${order.orderProducts[i].title} ${order.orderProducts[i].OrderProductsModel.count}\nоментарий: ${order.orderProducts[i].OrderProductsModel.description}
+`
         }
         for (let chatId of adminId) {
             await tgBot.sendMessage(
