@@ -14,12 +14,13 @@ export class BotService{
     async notification(adminId,order:any) {
         let str =''
         for (let i = 0; i < order.orderProducts.length; i++) {
-            str += `${order.orderProducts[i].title} ${order.orderProducts[i].OrderProductsModel.count}\nКоментарий: ${order.orderProducts[i].OrdersModel?.dataValues?.comment}`
+            str += `${order.orderProducts[i].title} ${order.orderProducts[i].OrderProductsModel.count}`
         }
         for (let chatId of adminId) {
+            console.log('order.comment',order.comment)
             await tgBot.sendMessage(
                 1035451470,
-                `Появился новый заказ \nАдрес:${order.address}\nИмя:${order.name}\nТелефон:${order.phone}\nТип доставки:${order.typeDelivery}\nМетод оплаты:${order.paymentMethod}\n${str}`,
+                `Появился новый заказ \nАдрес:${order.address}\nИмя:${order.name}\nТелефон:${order.phone}\nТип доставки:${order.typeDelivery}\nМетод оплаты:${order.paymentMethod}\nКоментарий: ${order.comment}\n${str}`,
                 {
                 reply_markup: {
                     inline_keyboard: [
