@@ -106,8 +106,8 @@ export class BotStartService {
                 await this.authService.authentication({
                     chatId: `${msg.chat.id}`,
                     queryId: 'ssss',
-                    // firstName:msg.from.first_name,
-                    // lastName:msg.from.last_name,
+                    firstName:msg.from.first_name,
+                    lastName:msg.from.last_name,
                     username:msg.from.username
                 })
 

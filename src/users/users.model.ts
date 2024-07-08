@@ -17,13 +17,13 @@ export class UsersModel extends Model<UsersModel> {
     @Column({type: DataType.STRING, allowNull: true})
     username: string;
 
-    // @ApiProperty({example: 'Ivan', description: 'Ник пользователя'})
-    // @Column({type: DataType.TEXT, allowNull: true})
-    // firstName: string;
-    //
-    // @ApiProperty({example: 'Ivan', description: 'Ник пользователя'})
-    // @Column({type: DataType.TEXT, allowNull: true})
-    // lastName: string;
+    @ApiProperty({example: 'Ivan', description: 'Ник пользователя'})
+    @Column({type: DataType.STRING, allowNull: true})
+    firstName: string;
+
+    @ApiProperty({example: 'Ivan', description: 'Ник пользователя'})
+    @Column({type: DataType.STRING, allowNull: true})
+    lastName: string;
 
     @ApiProperty({example: 'queryId', description: 'queryId'})
     @Column({type: DataType.STRING, allowNull: false})
