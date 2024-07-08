@@ -8,6 +8,6 @@ export class UsersDto {
     readonly birthdate?: string;
     readonly phone?: string;
     readonly address?: string;
-    readonly firstName?: string;
-    readonly lastName?: string;
+    readonly firstname?: string;
+    readonly lastname?: string;
 }

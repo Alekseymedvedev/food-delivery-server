@@ -19,11 +19,11 @@ export class UsersModel extends Model<UsersModel> {
 
     @ApiProperty({example: 'Ivan', description: 'Ник пользователя'})
     @Column({type: DataType.TEXT, allowNull: true})
-    firstName: string;
+    firstname: string;
 
     @ApiProperty({example: 'Ivan', description: 'Ник пользователя'})
     @Column({type: DataType.TEXT, allowNull: true})
-    lastName: string;
+    lastname: string;
 
     @ApiProperty({example: 'queryId', description: 'queryId'})
     @Column({type: DataType.TEXT, allowNull: false})
