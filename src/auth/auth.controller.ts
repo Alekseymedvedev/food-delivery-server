@@ -13,6 +13,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('')
     register(@Body() dto: AuthDto) {
+        console.log('dto',dto)
         return this.authService.authentication(dto);
     }
 }

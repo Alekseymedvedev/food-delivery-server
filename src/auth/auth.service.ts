@@ -10,7 +10,6 @@ export class AuthService {
                 private tokenService: TokenService,
                 private botService: BotService) {
     }
-
     async authentication(dto: UsersDto) {
         try {
             const existUser = await this.usersService.findOne(`${dto.chatId}`)

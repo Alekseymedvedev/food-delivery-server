@@ -103,12 +103,19 @@ export class BotStartService {
             const adminChatId = await this.usersService.findAdmin()
             const user = await this.usersService.findOne(`${msg.chat.id}`)
             if (!user) {
-                await this.authService.authentication({chatId: `${msg.chat.id}`, queryId: 'ssss'})
+                await this.authService.authentication({
+                    chatId: `${msg.chat.id}`,
+                    queryId: 'ssss',
+                    firstName:msg.from.first_name,
+                    lastName:msg.from.last_name,
+                    username:msg.from.username
+                })
+
                 const newUser = await this.usersService.findOne(`${msg.chat.id}`)
                 for (let adminId of adminChatId) {
                     await this.bot.sendMessage(
                         adminId,
-                        `Создан новый пользователь!\nID: ${newUser.id} | ${newUser.username}\nChat ID: ${newUser.chatId}\nSource: ${msg.text.split(' ')[1]}`,
+                        `Создан новый пользователь!\nID: ${newUser.id} | ${newUser.username}\nfirstName: ${newUser.firstName}\nlastName: ${newUser.lastName}\nChat ID: ${newUser.chatId}\nSource: ${msg.text.split(' ')[1]}`,
                         {
                             reply_markup: {
                                 inline_keyboard: [
