@@ -15,11 +15,11 @@ export class OrdersModel extends Model {
     typeDelivery: string;
 
     @ApiProperty({example: 'Готов к выдаче', description: 'Статус заказа'})
-    @Column({type: DataType.STRING, allowNull: false, defaultValue:'новый'})
+    @Column({type: DataType.STRING, allowNull: false, defaultValue: 'новый'})
     status: string;
 
     @ApiProperty({example: false, description: 'Уведомления заказа'})
-    @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue:false})
+    @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
     notifications: boolean;
 
     @ApiProperty({example: 'пер. Цветочный, д23, кв. 2', description: 'Адрес'})
@@ -37,6 +37,10 @@ export class OrdersModel extends Model {
     @ApiProperty({example: 'Метод оплаты ', description: 'Наличные'})
     @Column({type: DataType.STRING, allowNull: false})
     paymentMethod: string;
+
+    @ApiProperty({example: 'Комнтарий к заказу ', description: 'Комнтарий к заказу'})
+    @Column({type: DataType.STRING, allowNull: true})
+    comment: string;
 
     @BelongsToMany(() => ProductsModel, () => OrderProductsModel)
     orderProducts: Partial<ProductsModel>[];

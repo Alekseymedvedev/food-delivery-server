@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Patch, UseGuards,} from '@nestjs/common';
+import {Body, Controller, Get, Param, Patch, Query, UseGuards,} from '@nestjs/common';
 import {UsersService} from './users.service';
 import {UsersDto} from './users.dto';
 import {UsersModel} from './users.model';
@@ -16,6 +16,11 @@ export class UsersController {
     @Get('')
     getAll() {
         return this.usersService.getAll();
+    }
+    @Get('/search')
+    async search(@Query() query: {name:string}) {
+        console.log('query',query)
+        return this.usersService.search(query.name);
     }
     @ApiOperation({summary: 'Получение пользователя'})
     @ApiResponse({status: 200, type: UsersModel})

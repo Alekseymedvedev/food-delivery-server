@@ -4,6 +4,7 @@ import {InjectModel} from '@nestjs/sequelize';
 import {UsersDto} from './users.dto';
 import {BotService} from "../bot/bot.service";
 import {Op} from "sequelize";
+import {ProductsModel} from "../products/products.model";
 
 @Injectable()
 export class UsersService {
@@ -81,7 +82,6 @@ export class UsersService {
     }
 
     async updateRoleUser(chatId: string,body) {
-
         try {
             const user = await this.usersRepository.findOne({where: {chatId}});
             await user.update({role: body.role});
@@ -89,6 +89,18 @@ export class UsersService {
             return user;
         } catch (e) {
             await this.botService.errorMessage(`Произошла ошибка при обновлении роли пользователя: ${e}`)
+            throw new HttpException(
+                `Произошла ошибка при обновлении роли пользователя: ${e}`,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+    async search(query: string) {
+        console.log('query',query)
+        try {
+            return await this.usersRepository.findAll({ where: {name: {[Op.iLike]: `%${query}%`}} });
+        } catch (e) {
+            await this.botService.errorMessage(`Произошла ошибка при поиске пользователя: ${e}`)
             throw new HttpException(
                 `Произошла ошибка при обновлении роли пользователя: ${e}`,
                 HttpStatus.INTERNAL_SERVER_ERROR,
