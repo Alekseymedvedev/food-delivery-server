@@ -107,7 +107,7 @@ export class BotStartService {
                     chatId: `${msg.chat.id}`,
                     queryId: 'ssss',
                     // firstName:msg.from.first_name,
-                    lastName:msg.from.last_name,
+                     lastName:msg.from.last_name,
                     username:msg.from.username
                 })
 
@@ -115,7 +115,7 @@ export class BotStartService {
                 for (let adminId of adminChatId) {
                     await this.bot.sendMessage(
                         adminId,
-                        `Создан новый пользователь!\nID: ${newUser.id} | ${newUser.username}\nChat ID: ${newUser.chatId}\nSource: ${msg.text.split(' ')[1]}`,
+                        `Создан новый пользователь!\nID: ${newUser.id} | ${newUser.username}\nlastName: ${newUser.lastName}\nChat ID: ${newUser.chatId}\nSource: ${msg.text.split(' ')[1]}`,
                         {
                             reply_markup: {
                                 inline_keyboard: [
