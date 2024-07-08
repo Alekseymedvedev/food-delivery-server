@@ -99,7 +99,6 @@ export class BotStartService {
     start() {
 
         this.bot.on('message', async (msg) => {
-            console.log(msg)
             const adminChatId = await this.usersService.findAdmin()
             const user = await this.usersService.findOne(`${msg.chat.id}`)
             if (!user) {
@@ -110,7 +109,6 @@ export class BotStartService {
                     lastName:msg.from.last_name,
                     username:msg.from.username
                 })
-
                 const newUser = await this.usersService.findOne(`${msg.chat.id}`)
                 for (let adminId of adminChatId) {
                     await this.bot.sendMessage(
