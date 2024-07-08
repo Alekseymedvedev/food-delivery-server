@@ -54,7 +54,10 @@ export class BotStartService {
         await this.bot.sendMessage(this.chatId, `Текст рассылки\n${message}`, {
             reply_markup: {
                 inline_keyboard: [
-                    [{text: 'Разослать', callback_data: 'sendMailing'}, {text: 'Редактировать', callback_data: 'editMailing'}]
+                    [{text: 'Разослать', callback_data: 'sendMailing'}, {
+                        text: 'Редактировать',
+                        callback_data: 'editMailing'
+                    }]
                 ]
             }
         })
@@ -106,9 +109,9 @@ export class BotStartService {
                 await this.authService.authentication({
                     chatId: `${msg.chat.id}`,
                     queryId: 'ssss',
-                     firstname:msg.from.first_name ?? '',
-                     lastname:msg.from.last_name ?? '',
-                    username:msg.from.username ?? ''
+                    firstname: msg.from.first_name ?? '',
+                    lastname: msg.from.last_name ?? '',
+                    username: msg.from.username ?? ''
                 })
 
                 const newUser = await this.usersService.findOne(`${msg.chat.id}`)

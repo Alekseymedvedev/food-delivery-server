@@ -3,12 +3,15 @@ import {UsersService} from "../users/users.service";
 import {TokenService} from "../token/token.service";
 import {UsersDto} from "../users/users.dto";
 import {BotService} from "../bot/bot.service";
+import {UsersModel} from "../users/users.model";
+import {InjectModel} from "@nestjs/sequelize";
 
 @Injectable()
 export class AuthService {
     constructor(private usersService: UsersService,
                 private tokenService: TokenService,
-                private botService: BotService) {
+                private botService: BotService,
+                @InjectModel(UsersModel) private usersRepository: typeof UsersModel) {
     }
     async authentication(dto: UsersDto) {
         try {
@@ -19,6 +22,8 @@ export class AuthService {
                 const {id, chatId, username} = user
                 return {id, chatId, username, access_token: await this.tokenService.generateJwtToken({...payload, role: 'user'})};
             } else {
+                const user = await this.usersRepository.findByPk(existUser.id);
+                await user.update(dto);
                 return {existUser, access_token: await this.tokenService.generateJwtToken({...payload, role: existUser.role})};
             }
         } catch (e) {
